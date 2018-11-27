@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Threads</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+
+  <h1>All threads</h1>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngFor="let thread of threads">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ thread.topic }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-button (click)="goToThread(thread.id)"><ion-icon name="chatbubbles"></ion-icon> Go to thread</ion-button>
+            <ion-button ><ion-icon name="archive"></ion-icon> Archive</ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <h1>Archived threads</h1>
+
+
+
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="createThread()" mini>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
