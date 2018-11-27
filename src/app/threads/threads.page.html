@@ -13,21 +13,26 @@
 
   <h1>All threads</h1>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col *ngFor="let thread of threads">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>{{ thread.topic }}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-button (click)="goToThread(thread.id)"><ion-icon name="chatbubbles"></ion-icon> Go to thread</ion-button>
-            <ion-button ><ion-icon name="archive"></ion-icon> Archive</ion-button>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list>
+    <ion-item class="thread" *ngFor="let thread of threads" (click)="goToThread(thread.id)">
+      <ion-label>
+        <ion-text color="primary">
+          <h1>{{thread.topic}}</h1>
+        </ion-text>
+        <ng-container *ngIf="thread.lastActivity">
+          <ion-text color="medium">
+            {{thread.lastActivity.unixdate | date: 'h:mm' }}:
+          </ion-text>
+          <ion-text color="dark">
+            {{thread.lastActivity.text}}
+          </ion-text>
+        </ng-container>
+        <ng-container *ngIf="!thread.lastActivity">
+          <ion-text color="medium">No activity yet</ion-text>
+        </ng-container>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
   <h1>Archived threads</h1>
 

@@ -51,13 +51,21 @@ export class RequesterService {
     });
   }
 
-  public fetchMessages(threadId): Promise<any[]> {
+  public fetchMessages(threadId, afterId = null, beforeId = null): Promise<any[]> {
+    const reqBody = { threadId };
+    if (afterId) {
+      reqBody['afterId'] = afterId.toString();
+    }
+    if (beforeId) {
+      reqBody['beforeId'] = beforeId.toString();
+    }
     return new Promise((res, rej) => {
-      this.http.get(`${this.consts.baseUrl}/api/thread`, { threadId }, this.getAuthHeader())
+      this.http.get(`${this.consts.baseUrl}/api/thread`, reqBody, this.getAuthHeader())
         .then(resp => {
           return res(JSON.parse(resp.data));
         })
         .catch(err => {
+          console.log(err);
           return rej(err.error);
         });
     });

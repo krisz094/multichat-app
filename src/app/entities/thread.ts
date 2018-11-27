@@ -5,5 +5,5 @@ export class Thread {
   messages: Message[];
   topic: string;
   color: string;
-  lastActivity: string;
+  lastActivity: Message;
 }

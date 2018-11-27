@@ -9,40 +9,28 @@
 
 <ion-content padding>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        Send friend request
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
+  <h1> Send friend request</h1>
 
+  <ion-card>
+    <ion-card-content>
 
       <ion-item>
         <ion-label>E-mail</ion-label>
         <ion-input [(ngModel)]="recipientEmail"></ion-input>
         <ion-button (click)="sendFriendRequest()">Send</ion-button>
       </ion-item>
-
-
-
-
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        Pending incoming friend requests
-      </ion-card-title>
-    </ion-card-header>
+  <h1> Pending incoming friend requests</h1>
+
+  <ion-card *ngFor="let request of friendRequests">
     <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let request of friendRequests">
-          <ion-label>{{ request.friend.email }}</ion-label>
-          <ion-button color="success" (click)="acceptFriendRequest(request.id)">Accept</ion-button>
-        </ion-item>
-      </ion-list>
+      <ion-item>
+        <ion-label>{{request.friend.nickname}} ({{ request.friend.email }})</ion-label>
+        <ion-button color="success" (click)="acceptFriendRequest(request.id)">Accept</ion-button>
+      </ion-item>
     </ion-card-content>
   </ion-card>
+
 </ion-content>

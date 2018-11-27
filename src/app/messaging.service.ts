@@ -42,6 +42,14 @@ export class MessagingService {
             const actualThread = new Thread();
             actualThread.topic = /** thread.name */'Some Topic';
             actualThread.id = thread.id;
+            if (thread.lastActivity) {
+              const lastMsg = new Message();
+              lastMsg.sentByYou = thread.lastActivity.sentByYou;
+              lastMsg.text = thread.lastActivity.text;
+              lastMsg.unixdate = thread.lastActivity.createdAt;
+              lastMsg.id = thread.lastActivity.id;
+              actualThread.lastActivity = lastMsg;
+            }
             return actualThread;
           });
           return res(mappedThreads/* this.loggedInUser.friends.find(friend => friend.id === friendshipId).threads */);
@@ -113,14 +121,16 @@ export class MessagingService {
         });
     });
   }
-  refreshMessages(threadId): Promise<any[]> {
+  refreshMessages(threadId, afterId = null, beforeId = null): Promise<any[]> {
     return new Promise((res, rej) => {
-      this.req.fetchMessages(threadId)
+      this.req.fetchMessages(threadId, afterId, beforeId)
         .then(messages => {
           const actualMessages = messages.map(msg => {
             const actualMessage = new Message();
             actualMessage.sentByYou = msg.sentByYou;
             actualMessage.text = msg.text;
+            actualMessage.unixdate = msg.createdAt;
+            actualMessage.id = msg.id;
             return actualMessage;
           });
           return res(actualMessages);

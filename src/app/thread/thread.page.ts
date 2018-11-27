@@ -32,16 +32,54 @@ export class ThreadPage implements OnInit {
     }
   }
 
-  fetchMessages() {
+  fetchLast10Messages() {
     return new Promise((res, rej) => {
-
-      this.messaging.refreshMessages(this.threadId)
+      this.messaging.refreshMessages(this.threadId, null, null)
         .then(messages => {
           this.messages = messages;
           return res();
         })
         .catch(err => {
           this.toast.presentToast(err);
+          return rej();
+        });
+    });
+  }
+
+  fetchMessagesAfterLast() {
+    return new Promise((res, rej) => {
+      let lastMsgId;
+      if (this.messages.length > 0) {
+        lastMsgId = this.messages[this.messages.length - 1].id;
+      } else {
+        lastMsgId = null;
+      }
+      this.messaging.refreshMessages(this.threadId, lastMsgId, null)
+        .then(messages => {
+          this.messages = this.messages.concat(messages);
+          return res();
+        })
+        .catch(err => {
+          this.toast.presentToast(err);
+          return rej();
+        });
+    });
+  }
+
+  fetch10MessagesBeforeFirst() {
+    return new Promise((res, rej) => {
+      let firstMsgId;
+      if (this.messages.length > 0) {
+        firstMsgId = this.messages[0].id;
+      } else {
+        firstMsgId = null;
+      }
+      this.messaging.refreshMessages(this.threadId, null, firstMsgId)
+        .then(messages => {
+          this.messages = messages.concat(this.messages);
+          return res();
+        })
+        .catch(err => {
           return rej();
         });
     });
@@ -54,13 +92,13 @@ export class ThreadPage implements OnInit {
     }
     this.messaging.sendMessage(this.threadId, msg)
       .then(() => {
-        this.fetchMessages()
+        this.fetchMessagesAfterLast()
           .then(() => {
             this.scrollToBottom(200);
           });
       })
       .catch(err => {
-
+        this.toast.presentToast(err);
       });
 
     this.message = '';
@@ -74,11 +112,12 @@ export class ThreadPage implements OnInit {
   }
 
   ngOnInit() {
+    this.messages = [];
     this.threadId = this.route.snapshot.paramMap.get('threadId');
-    this.fetchMessages()
+    this.fetchLast10Messages()
       .then(() => {
         this.scrollToBottom();
-      })
+      });
   }
 
   ionViewDidLeave() {
@@ -89,7 +128,7 @@ export class ThreadPage implements OnInit {
 
   ionViewDidEnter() {
     this.interval = setInterval(() => {
-      this.fetchMessages();
+      this.fetchMessagesAfterLast();
     }, 3000);
   }
 
